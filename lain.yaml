@@ -1,0 +1,18 @@
+appname: netperf-client
+
+build:
+  base: registry.yxapp.xyz/centos:1.0.1
+  prepare:
+    version: 20170421
+  script:
+    - cd netperf-2.7.0 && ./configure && make && make install
+
+use_services:
+  netperf-service:
+    - netserver
+
+proc.worker:
+  cmd: netperf -t TCP_RR -H netserver -p 8080 -v 2 > /lain/app/stats.txt
+  volumes:
+    - /lain/app/stats.txt
+  memory: 64M
